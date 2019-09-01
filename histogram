@@ -11,9 +11,7 @@ Created on Wed Aug 28 04:54:25 2019
 #%%
 import time
 import pandas as pd
-from pandas.plotting import scatter_matrix
 import numpy as np
-import matplotlib
 import matplotlib.pylab as plt
 import matplotlib.pyplot as plp
 import seaborn as sns
@@ -25,6 +23,17 @@ from sklearn.model_selection import train_test_split
 from sklearn.linear_model import LassoLarsCV, LassoLarsIC
 import os
 #%%
+#
+#Sex
+#Arrhythmia
+#ragged R wave
+#diphasic derivation of R wave
+#ragged P wave  
+#diphasic derivation of P wave
+#ragged T wave  
+#diphasic derivation of T wave
+
+#%%
 # Retrieve current working directory (`cwd`)
 cwd = os.getcwd()
 cwd
@@ -35,75 +44,8 @@ df = pd.read_csv(r"C:\Users\yehadji\Documents\MCS\MCS 02\Arrhythmia Data Set\arr
                  na_values=['?'], delimiter = ";")
 
 #%%
-#fig1 = plt.figure(figsize=(30,30))
-#fig1 = sns.pairplot(df, vars=[
-#"Age",
-#"Height",
-#"Weight",
-#"QRS duration",
-#"P-R interval",
-#"Q-T interval",
-#"T interval",
-#"P interval",
-#"QRS",
-#"T",
-#"P",
-#"QRST",
-#"J",
-#"Heart rate",
-#"Q wave",
-#"R wave",
-#"S wave",
-#"R' wave",
-#"S' wave",
-#"# intrinsic deflections",
-#"ragged R wave",
-#"diphasic derivation of R wave",
-#"diphasic derivation of P wave",
-#"diphasic derivation of T wave",
-#"Of channel DII 28"], hue="Sex")
-#plt.savefig('histo1.jpg')
 
 #%%
-df2 = pd.melt(df, id_vars='Sex', value_vars=["Age",
-"Height",
-"Weight",
-"QRS duration",
-"P-R interval",
-"Q-T interval",
-"T interval",
-"P interval",
-"QRS",
-"T",
-"P",
-"QRST",
-"J",
-"Heart rate",
-"Q wave",
-"R wave",
-"S wave",
-"R' wave",
-"S' wave",
-"# intrinsic deflections",
-"ragged R wave",
-"diphasic derivation of R wave",
-"diphasic derivation of P wave",
-"diphasic derivation of T wave",
-"Of channel DII 28"], value_name='value')
-plt.figure(figsize=(30,30))
-#bins=np.linspace(df2.value.min(), df2.value.max(), 10)
-g = sns.FacetGrid(df2, col="variable", hue="Sex", palette="Set1", col_wrap=5)
-g.map(plt.hist, 'value', ec="k")
-#g.axes[-1].legend()
-plt.savefig('hist000.jpg')
-
-
-
-#%%
-params = {'axes.titlesize':'23',
-          'xtick.labelsize':'15',
-          'ytick.labelsize':'15'}
-matplotlib.rcParams.update(params)
 #fig1a = plt.figure()
 fig1 = df.hist(column=[
 "Age",
@@ -131,7 +73,6 @@ fig1 = df.hist(column=[
 "diphasic derivation of P wave",
 "diphasic derivation of T wave",
 "Of channel DII 28"], figsize=(30, 30))
-#¦plt.tight_layout()
 plt.savefig('histo1.jpg')
 #%%
 #fig1a = plt.figure()
