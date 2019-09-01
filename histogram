@@ -1,0 +1,418 @@
+# -*- coding: utf-8 -*-
+"""
+Created on Wed Aug 28 04:54:25 2019
+
+@author: yehadji
+"""
+
+#%%
+
+
+#%%
+import time
+import pandas as pd
+from pandas.plotting import scatter_matrix
+import numpy as np
+import matplotlib
+import matplotlib.pylab as plt
+import matplotlib.pyplot as plp
+import seaborn as sns
+import matplotlib.gridspec as gridspec
+import missingno as msno
+from scipy import stats
+from sklearn.preprocessing import Imputer
+from sklearn.model_selection import train_test_split
+from sklearn.linear_model import LassoLarsCV, LassoLarsIC
+import os
+#%%
+# Retrieve current working directory (`cwd`)
+cwd = os.getcwd()
+cwd
+# Change directory
+os.chdir(r"C:\Users\yehadji\Documents\MCS\MCS 02\Arrhythmia Data Set")
+#%%
+df = pd.read_csv(r"C:\Users\yehadji\Documents\MCS\MCS 02\Arrhythmia Data Set\arrhythmia.csv", 
+                 na_values=['?'], delimiter = ";")
+
+#%%
+#fig1 = plt.figure(figsize=(30,30))
+#fig1 = sns.pairplot(df, vars=[
+#"Age",
+#"Height",
+#"Weight",
+#"QRS duration",
+#"P-R interval",
+#"Q-T interval",
+#"T interval",
+#"P interval",
+#"QRS",
+#"T",
+#"P",
+#"QRST",
+#"J",
+#"Heart rate",
+#"Q wave",
+#"R wave",
+#"S wave",
+#"R' wave",
+#"S' wave",
+#"# intrinsic deflections",
+#"ragged R wave",
+#"diphasic derivation of R wave",
+#"diphasic derivation of P wave",
+#"diphasic derivation of T wave",
+#"Of channel DII 28"], hue="Sex")
+#plt.savefig('histo1.jpg')
+
+#%%
+df2 = pd.melt(df, id_vars='Sex', value_vars=["Age",
+"Height",
+"Weight",
+"QRS duration",
+"P-R interval",
+"Q-T interval",
+"T interval",
+"P interval",
+"QRS",
+"T",
+"P",
+"QRST",
+"J",
+"Heart rate",
+"Q wave",
+"R wave",
+"S wave",
+"R' wave",
+"S' wave",
+"# intrinsic deflections",
+"ragged R wave",
+"diphasic derivation of R wave",
+"diphasic derivation of P wave",
+"diphasic derivation of T wave",
+"Of channel DII 28"], value_name='value')
+plt.figure(figsize=(30,30))
+#bins=np.linspace(df2.value.min(), df2.value.max(), 10)
+g = sns.FacetGrid(df2, col="variable", hue="Sex", palette="Set1", col_wrap=5)
+g.map(plt.hist, 'value', ec="k")
+#g.axes[-1].legend()
+plt.savefig('hist000.jpg')
+
+
+
+#%%
+params = {'axes.titlesize':'23',
+          'xtick.labelsize':'15',
+          'ytick.labelsize':'15'}
+matplotlib.rcParams.update(params)
+#fig1a = plt.figure()
+fig1 = df.hist(column=[
+"Age",
+"Height",
+"Weight",
+"QRS duration",
+"P-R interval",
+"Q-T interval",
+"T interval",
+"P interval",
+"QRS",
+"T",
+"P",
+"QRST",
+"J",
+"Heart rate",
+"Q wave",
+"R wave",
+"S wave",
+"R' wave",
+"S' wave",
+"# intrinsic deflections",
+"ragged R wave",
+"diphasic derivation of R wave",
+"diphasic derivation of P wave",
+"diphasic derivation of T wave",
+"Of channel DII 28"], figsize=(30, 30))
+#¦plt.tight_layout()
+plt.savefig('histo1.jpg')
+#%%
+#fig1a = plt.figure()
+fig2 = df.hist(column=[
+"Of channel DII 29",
+"Of channel DII 30",
+"Of channel DII 31",
+"Of channel DII 32",
+"Of channel DII 33",
+"Of channel DII 34",
+"Of channel DII 35",
+"Of channel DII 36",
+"Of channel DII 37",
+"Of channel DII 38",
+"Of channel DII 39",
+"Of channels DIII 40",
+"Of channels DIII 41",
+"Of channels DIII 42",
+"Of channels DIII 43",
+"Of channels DIII 44",
+"Of channels DIII 45",
+"Of channels DIII 46",
+"Of channels DIII 47",
+"Of channels DIII 48",
+"Of channels DIII 49",
+"Of channels DIII 50",
+"Of channels DIII 51",
+"Of channel AVR 52",
+"Of channel AVR 53"], figsize=(30, 30))
+plt.savefig('histo2.jpg')
+#%%
+fig3 = df.hist(column=[
+"Of channel AVR 54",
+"Of channel AVR 55",
+"Of channel AVR 56",
+"Of channel AVR 57",
+"Of channel AVR 58",
+"Of channel AVR 59",
+"Of channel AVR 60",
+"Of channel AVR 61",
+"Of channel AVR 62",
+"Of channel AVR 63",
+"Of channel AVL 64",
+"Of channel AVL 65",
+"Of channel AVL 66",
+"Of channel AVL 67",
+"Of channel AVL 68",
+"Of channel AVL 69",
+"Of channel AVL 70",
+"Of channel AVL 71",
+"Of channel AVL 72",
+"Of channel AVL 73",
+"Of channel AVL 74",
+"Of channel AVL 75",
+"Of channel AVF 76",
+"Of channel AVF 77",
+"Of channel AVF 78"], figsize=(30, 30))
+plt.savefig('histo3.jpg')
+#%%
+fig4 = df.hist(column=[
+"Of channel AVF 79",
+"Of channel AVF 80",
+"Of channel AVF 81",
+"Of channel AVF 82",
+"Of channel AVF 83",
+"Of channel AVF 84",
+"Of channel AVF 85",
+"Of channel AVF 86",
+"Of channel AVF 87",
+"Of channel V1 88",
+"Of channel V1 89",
+"Of channel V1 90",
+"Of channel V1 91",
+"Of channel V1 92",
+"Of channel V1 93",
+"Of channel V1 94",
+"Of channel V1 95",
+"Of channel V1 96",
+"Of channel V1 97",
+"Of channel V1 98",
+"Of channel V1 99",
+"Of channel V2 100",
+"Of channel V2 101",
+"Of channel V2 102",
+"Of channel V2 103"], figsize=(30, 30))
+plt.savefig('histo4.jpg')
+#%%
+fig5 = df.hist(column=[
+"Of channel V2 104",
+"Of channel V2 105",
+"Of channel V2 106",
+"Of channel V2 107",
+"Of channel V2 108",
+"Of channel V2 109",
+"Of channel V2 110",
+"Of channel V2 111",
+"Of channel V3 112",
+"Of channel V3 113",
+"Of channel V3 114",
+"Of channel V3 115",
+"Of channel V3 116",
+"Of channel V3 117",
+"Of channel V3 118",
+"Of channel V3 119",
+"Of channel V3 120",
+"Of channel V3 121",
+"Of channel V3 122",
+"Of channel V3 123",
+"Of channel V4 124",
+"Of channel V4 125",
+"Of channel V4 126",
+"Of channel V4 127",
+"Of channel V4 128"], figsize=(30, 30))
+plt.savefig('histo5.jpg')
+#%%
+fig6 = df.hist(column=[
+"Of channel V4 129",
+"Of channel V4 130",
+"Of channel V4 131",
+"Of channel V4 132",
+"Of channel V4 133",
+"Of channel V4 134",
+"Of channel V4 135",
+"Of channel V5 136",
+"Of channel V5 137",
+"Of channel V5 138",
+"Of channel V5 139",
+"Of channel V5 140",
+"Of channel V5 141",
+"Of channel V5 142",
+"Of channel V5 143",
+"Of channel V5 144",
+"Of channel V5 145",
+"Of channel V5 146",
+"Of channel V5 147",
+"Of channel V6 148",
+"Of channel V6 149",
+"Of channel V6 150",
+"Of channel V6 151",
+"Of channel V6 152",
+"Of channel V6 153"], figsize=(30, 30))
+plt.savefig('histo6.jpg')
+#%%
+fig7 = df.hist(column=[
+"Of channel V6 154",
+"Of channel V6 155",
+"Of channel V6 156",
+"Of channel V6 157",
+"Of channel V6 158",
+"Of channel V6 159",
+"Of channel DI 160",
+"Of channel DI 161",
+"Of channel DI 162",
+"Of channel DI 163",
+"Of channel DI 164",
+"Of channel DI 165",
+"Of channel DI 166",
+"Of channel DI 167",
+"QRSA",
+"QRSTA",
+"Of channel DII 170",
+"Of channel DII 171",
+"Of channel DII 172",
+"Of channel DII 173",
+"Of channel DII 174",
+"Of channel DII 175",
+"Of channel DII 176",
+"Of channel DII 177",
+"Of channel DII 178"], figsize=(30, 30))
+plt.savefig('histo7.jpg')
+#%%
+fig8 = df.hist(column=[
+"Of channel DII 179",
+"Of channel DIII 180",
+"Of channel DIII 181",
+"Of channel DIII 182",
+"Of channel DIII 183",
+"Of channel DIII 184",
+"Of channel DIII 185",
+"Of channel DIII 186",
+"Of channel DIII 187",
+"Of channel DIII 188",
+"Of channel DIII 189",
+"Of channel AVR 190",
+"Of channel AVR 191",
+"Of channel AVR 192",
+"Of channel AVR 193",
+"Of channel AVR 194",
+"Of channel AVR 195",
+"Of channel AVR 196",
+"Of channel AVR 197",
+"Of channel AVR 198",
+"Of channel AVR 199",
+"Of channel AVL 200",
+"Of channel AVL 201",
+"Of channel AVL 202",
+"Of channel AVL 203"], figsize=(30, 30))
+plt.savefig('histo8.jpg')
+#%%
+fig9 = df.hist(column=[
+"Of channel AVL 204",
+"Of channel AVL 205",
+"Of channel AVL 206",
+"Of channel AVL 207",
+"Of channel AVL 208",
+"Of channel AVL 209",
+"Of channel AVF 210",
+"Of channel AVF 211",
+"Of channel AVF 212",
+"Of channel AVF 213",
+"Of channel AVF 214",
+"Of channel AVF 215",
+"Of channel AVF 216",
+"Of channel AVF 217",
+"Of channel AVF 218",
+"Of channel AVF 219",
+"Of channel V1 220",
+"Of channel V1 221",
+"Of channel V1 222",
+"Of channel V1 223",
+"Of channel V1 224",
+"Of channel V1 225",
+"Of channel V1 226",
+"Of channel V1 227",
+"Of channel V1 228"], figsize=(30, 30))
+plt.savefig('histo9.jpg')
+#%%
+fig10 = df.hist(column=[
+"Of channel V1 229",
+"Of channel V2 230",
+"Of channel V2 231",
+"Of channel V2 232",
+"Of channel V2 233",
+"Of channel V2 234",
+"Of channel V2 235",
+"Of channel V2 236",
+"Of channel V2 237",
+"Of channel V2 238",
+"Of channel V2 239",
+"Of channel V3 240",
+"Of channel V3 241",
+"Of channel V3 242",
+"Of channel V3 243",
+"Of channel V3 244",
+"Of channel V3 245",
+"Of channel V3 246",
+"Of channel V3 247",
+"Of channel V3 248",
+"Of channel V3 249",
+"Of channel V4 250",
+"Of channel V4 251",
+"Of channel V4 252",
+"Of channel V4 253"], figsize=(30, 30))
+plt.savefig('histo10.jpg')
+#%%
+fig11 = df.hist(column=[
+"Of channel V4 254",
+"Of channel V4 255",
+"Of channel V4 256",
+"Of channel V4 257",
+"Of channel V4 258",
+"Of channel V4 259",
+"Of channel V5 260",
+"Of channel V5 261",
+"Of channel V5 262",
+"Of channel V5 263",
+"Of channel V5 264",
+"Of channel V5 265",
+"Of channel V5 266",
+"Of channel V5 267",
+"Of channel V5 268",
+"Of channel V5 269",
+"Of channel V6 270",
+"Of channel V6 271",
+"Of channel V6 272",
+"Of channel V6 273",
+"Of channel V6 274",
+"Of channel V6 275",
+"Of channel V6 276",
+"Of channel V6 277",
+"Of channel V6 278",
+"Of channel V6 279"], figsize=(30, 30))
+plt.savefig('histo11.jpg')
+#%%
